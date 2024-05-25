@@ -1,28 +1,19 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const SessionStorageManager = () => {
     const [token, setToken] = useState<string>("");
 
-    const handleSubmit = () => {
-        // Server endpoint down atm, simulating token
-        fetch("https://fakestoreapi.com/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json", // Ensure the server knows you're sending JSON
-            },
-            body: JSON.stringify({
-                username: "mor_2314",
-                password: "83r5^_",
-            }),
-        })
-            .then((res) => res.json())
-            .then((json) => sessionStorage.setItem("jwtToken", json.token));
-
-        // store JWT token in session storage
+    const handleSubmit = async () => {
+        const json = await axios.post("https://fakestoreapi.com/auth/login", {
+            username: "mor_2314",
+            password: "83r5^_",
+        });
+        sessionStorage.setItem("jwtToken", json.data.token);
+        console.log(json.data.token);
     };
 
     const handleLogout = () => {
-        // clear JWT Token from storage
         sessionStorage.clear();
         setToken("");
     };
